@@ -1,0 +1,11 @@
+<header>
+    <h1>Change page colour</h1>
+    <input type="color" id="color-picker" />
+    <script>
+        const colorPicker = document.getElementById('color-picker');
+        colorPicker.addEventListener('input', () => {
+            document.body.style.backgroundColor = colorPicker.value
+        })
+    </script>
+
+</header>
