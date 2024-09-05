@@ -1,9 +1,9 @@
 from flask import redirect, render_template, url_for, Blueprint
 from flask_login import current_user, login_user
 
-from app import bcrypt
-from app.forms import TutorLoginForm
-from app.models import Tutor
+from website import bcrypt
+from website.forms import TutorLoginForm
+from website.models import Tutor
 
 main = Blueprint('main', __name__)
 

@@ -2,8 +2,8 @@ from datetime import datetime
 
 from flask_bcrypt import generate_password_hash
 
-from app import create_app, db
-from app.models import Student, Course, Module, CourseModule, ModuleEnrolment, Tutor, StudentTutor
+from website import create_app, db
+from website.models import Student, Course, Module, CourseModule, ModuleEnrolment, Tutor, StudentTutor
 
 app = create_app()
 
