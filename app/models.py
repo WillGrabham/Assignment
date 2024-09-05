@@ -1,4 +1,14 @@
-from app import db
+from flask_login import UserMixin
+
+from app import db, login_manager
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    user = Student.query.get(int(user_id))
+    if user is None:
+        user = Tutor.query.get(int(user_id))
+    return user
 
 
 class Course(db.Model):
@@ -6,8 +16,8 @@ class Course(db.Model):
     course_name = db.Column(db.String(80), unique=False, nullable=False)
 
 
-class Student(db.Model):
-    student_id = db.Column(db.Integer, primary_key=True)
+class Student(db.Model, UserMixin):
+    id = db.Column(db.Integer, primary_key=True)
     student_email = db.Column(db.String(80), unique=True, nullable=False)
     student_password = db.Column(db.String(80), unique=False, nullable=False)
     student_name = db.Column(db.String(80), unique=False, nullable=False)
@@ -15,8 +25,8 @@ class Student(db.Model):
     course_id = db.Column(db.Integer, db.ForeignKey('course.course_id'), unique=False, nullable=False)
 
 
-class Tutor(db.Model):
-    tutor_id = db.Column(db.Integer, primary_key=True)
+class Tutor(db.Model, UserMixin):
+    id = db.Column(db.Integer, primary_key=True)
     tutor_name = db.Column(db.String(80), unique=False, nullable=False)
     tutor_contact_email = db.Column(db.String(80), unique=False, nullable=False)
     tutor_email = db.Column(db.String(80), unique=True, nullable=False)
@@ -25,12 +35,12 @@ class Tutor(db.Model):
 
 
 class StudentTutor(db.Model):
-    student_id = db.Column(db.Integer, db.ForeignKey('student.student_id'), primary_key=True)
-    tutor_id = db.Column(db.Integer, db.ForeignKey('tutor.tutor_id'), primary_key=True)
+    student_id = db.Column(db.Integer, db.ForeignKey('student.id'), primary_key=True)
+    tutor_id = db.Column(db.Integer, db.ForeignKey('tutor.id'), primary_key=True)
 
 
 class ModuleEnrolment(db.Model):
-    student_id = db.Column(db.Integer, db.ForeignKey('student.student_id'), primary_key=True)
+    student_id = db.Column(db.Integer, db.ForeignKey('student.id'), primary_key=True)
     module_id = db.Column(db.Integer, db.ForeignKey('module.module_id'), primary_key=True)
     grade = db.Column(db.Integer, unique=False, nullable=True)
     grade_date = db.Column(db.Date, unique=False, nullable=True)

@@ -1,4 +1,8 @@
+email_validator
 Flask
-Gunicorn
-Flask-SQLAlchemy
 Flask-Bcrypt
+Flask-Login
+Flask-SQLAlchemy
+Flask-WTF
+Gunicorn
+WTForms

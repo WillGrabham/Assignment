@@ -1,0 +1,26 @@
+{% block content %}
+<h2>Login</h2>
+<form method="POST" action="{{ url_for('main.tutor_login') }}">
+    <div class="input-field">
+        {{ form.email.label }}
+        {{ form.email(class="validate") }}
+        {% if form.email.errors %}
+        <span>{{ form.email.errors[0] }}</span>
+        {% endif %}
+    </div>
+    <div class="input-field">
+        {{ form.password.label }}
+        {{ form.password(class="validate") }}
+        {% if form.password.errors %}
+        <span>{{ form.password.errors[0] }}</span>
+        {% endif %}
+    </div>
+    <div class="input-field">
+        {{ form.remember }}
+        {{ form.remember.label }}
+    </div>
+    <div class="input-field">
+        <button type="submit">Login</button>
+    </div>
+</form>
+{% endblock %}

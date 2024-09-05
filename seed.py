@@ -38,7 +38,7 @@ with app.app_context():
 
     new_student = Student.query.filter_by(student_name="Student name").first()
     moduleEnrolment = ModuleEnrolment(
-        student_id=new_student.student_id,
+        student_id=new_student.id,
         module_id=new_module.module_id,
         grade=70,
         grade_date=datetime.now().date()
@@ -58,8 +58,8 @@ with app.app_context():
 
     new_tutor = Tutor.query.filter_by(tutor_name="Tutor name").first()
     student_tutor = StudentTutor(
-        student_id=new_student.student_id,
-        tutor_id=new_tutor.tutor_id
+        student_id=new_student.id,
+        tutor_id=new_tutor.id
     )
     db.session.add(student_tutor)
     db.session.commit()
