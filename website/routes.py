@@ -5,9 +5,9 @@ from flask_login import current_user, login_user, logout_user, login_required
 
 from website import bcrypt, db
 from website.api import get_student_grades, get_student_name, get_students_for_tutor, get_all_modules, \
-    get_all_module_ids, get_student_enrolments
-from website.forms import TutorLoginForm, TutorAddStudentGradeForm
-from website.models import Tutor, ModuleEnrolment
+    get_all_module_ids, get_student_enrolments, get_all_courses
+from website.forms import TutorLoginForm, TutorAddStudentGradeForm, TutorCreateStudentForm
+from website.models import Tutor, ModuleEnrolment, Student, Course, StudentTutor
 
 main = Blueprint('main', __name__)
 
@@ -48,7 +48,7 @@ def logout():
     return redirect(url_for('main.home'))
 
 
-@main.route('/tutor/edit/<int:student_id>', methods=['GET', 'POST'])
+@main.route('/edit/<int:student_id>', methods=['GET', 'POST'])
 @login_required
 def edit_student(student_id):
     if is_tutor():
@@ -75,6 +75,42 @@ def edit_student(student_id):
                                student_name=get_student_name(student_id),
                                module_enrolments=get_student_enrolments(student_id)
                                )
+    else:
+        return redirect(url_for('main.home'))
+
+
+@main.route('/create', methods=['GET', 'POST'])
+@login_required
+def create_student():
+    if is_tutor():
+        form = TutorCreateStudentForm()
+        if form.validate_on_submit():
+            if (Student.query.filter_by(student_email=form.student_email.data).first() is None and
+                    Course.query.filter_by(course_id=form.course_id.data).first() is not None):
+                db.session.add(
+                    Student(
+                        student_email=form.student_email.data,
+                        student_password=bcrypt.generate_password_hash(form.student_password.data),
+                        student_name=form.student_name.data,
+                        join_date=datetime.now().date(),
+                        course_id=form.course_id.data,
+                    )
+                )
+                db.session.commit()
+                student_id = Student.query.filter_by(student_email=form.student_email.data).first().id
+                db.session.add(
+                    StudentTutor(
+                        student_id=student_id,
+                        tutor_id=current_user.id
+                    )
+                )
+                db.session.commit()
+                return redirect(url_for('main.edit_student', student_id=student_id))
+        return render_template(
+            "create_student.html",
+            form=form,
+            courses=get_all_courses(),
+        )
     else:
         return redirect(url_for('main.home'))
 

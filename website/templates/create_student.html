@@ -1,0 +1,53 @@
+<body>
+<h2 style="text-align: center">Create student</h2>
+<div style="display: flex; flex-flow: wrap row; justify-content: space-around">
+    <table>
+        <thead>
+        <tr>
+            <th>Course id</th>
+            <th>Course name</th>
+        </tr>
+        </thead>
+        {% for course in courses: %}
+        <tr>
+            <td>{{course.course_id}}</td>
+            <td>{{course.course_name}}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    <form method="POST" action="{{ url_for('main.create_student') }}">
+        {{ form.hidden_tag() }}
+        <div class="input-field">
+            {{ form.student_email.label }}
+            {{ form.student_email(class="validate") }}
+            {% if form.student_email.errors %}
+            <span>{{ form.student_email.errors[0] }}</span>
+            {% endif %}
+        </div>
+        <div class="input-field">
+            {{ form.student_password.label }}
+            {{ form.student_password(class="validate") }}
+            {% if form.student_password.errors %}
+            <span>{{ form.student_password.errors[0] }}</span>
+            {% endif %}
+        </div>
+        <div class="input-field">
+            {{ form.student_name.label }}
+            {{ form.student_name(class="validate") }}
+            {% if form.student_name.errors %}
+            <span>{{ form.student_name.errors[0] }}</span>
+            {% endif %}
+        </div>
+        <div class="input-field">
+            {{ form.course_id.label }}
+            {{ form.course_id(class="validate") }}
+            {% if form.course_id.errors %}
+            <span>{{ form.course_id.errors[0] }}</span>
+            {% endif %}
+        </div>
+        <div class="input-field">
+            <button type="submit">Login</button>
+        </div>
+    </form>
+</div>
+</body>

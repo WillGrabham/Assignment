@@ -1,4 +1,4 @@
-from website.models import Student, StudentTutor, ModuleEnrolment, CourseModule, Module
+from website.models import Student, StudentTutor, ModuleEnrolment, CourseModule, Module, Course
 
 
 def get_students_for_tutor(tutor_id):
@@ -29,6 +29,10 @@ def get_student_grades(student_id):
 
 def get_all_modules():
     return Module.query.all()
+
+
+def get_all_courses():
+    return Course.query.all()
 
 
 def get_all_module_ids():
