@@ -6,8 +6,9 @@ from flask_login import current_user, login_user, logout_user, login_required
 from website import bcrypt, db
 from website.api import get_student_grades, get_student_name, get_students_for_tutor, get_all_modules, \
     get_all_module_ids, get_student_enrolments, get_all_courses
-from website.forms import TutorLoginForm, TutorAddStudentGradeForm, TutorCreateStudentForm
-from website.models import Tutor, ModuleEnrolment, Student, Course, StudentTutor
+from website.forms import TutorLoginForm, TutorAddStudentGradeForm, TutorCreateStudentForm, AdminCreateCourse, \
+    AdminAttachModuleToCourse
+from website.models import Tutor, ModuleEnrolment, Student, Course, StudentTutor, CourseModule, Module
 
 main = Blueprint('main', __name__)
 
@@ -53,7 +54,7 @@ def logout():
     return redirect(url_for('main.home'))
 
 
-@main.route('/edit/<int:student_id>', methods=['GET', 'POST'])
+@main.route('/student/<int:student_id>', methods=['GET', 'POST'])
 @login_required
 def edit_student(student_id):
     if is_tutor():
@@ -84,7 +85,48 @@ def edit_student(student_id):
         return redirect(url_for('main.home'))
 
 
-@main.route('/create', methods=['GET', 'POST'])
+@main.route('/course/create', methods=['GET', 'POST'])
+@login_required
+def create_course():
+    if is_admin():
+        form = AdminCreateCourse()
+        if form.validate_on_submit():
+            course = Course(course_name=form.course_name.data)
+            db.session.add(course)
+            db.session.commit()
+            return redirect(url_for('main.edit_course', course_id=course.course_id))
+        return render_template("create_course.html", form=form)
+    return redirect(url_for('main.home'))
+
+
+@main.route('/course/<int:course_id>', methods=['GET', 'POST'])
+@login_required
+def edit_course(course_id):
+    if is_admin():
+        form = AdminAttachModuleToCourse()
+        course = Course.query.get(course_id)
+        if course is None:
+            return redirect(url_for('main.home'))
+        if form.validate_on_submit():
+            if Module.query.get(form.module_id.data) is not None:
+                db.session.add(
+                    CourseModule(
+                        course_id=course_id,
+                        module_id=form.module_id.data,
+                        module_order=form.module_order.data,
+                    )
+                )
+                db.session.commit()
+                return redirect(url_for('main.edit_course', course_id=course_id))
+        return render_template("edit_course.html",
+                               form=form,
+                               course_id=course_id,
+                               course_name=course.course_name,
+                               modules=get_all_modules())
+    return redirect(url_for('main.home'))
+
+
+@main.route('/student/create', methods=['GET', 'POST'])
 @login_required
 def create_student():
     if is_tutor():

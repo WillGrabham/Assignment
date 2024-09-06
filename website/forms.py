@@ -23,3 +23,12 @@ class TutorCreateStudentForm(FlaskForm):
     student_name = StringField('Name', validators=[DataRequired()])
     course_id = IntegerField('Course id', validators=[DataRequired()])
     submit = SubmitField('Create student')
+
+
+class AdminCreateCourse(FlaskForm):
+    course_name = StringField('Course name', validators=[DataRequired()])
+
+
+class AdminAttachModuleToCourse(FlaskForm):
+    module_id = IntegerField('Module id', validators=[DataRequired()])
+    module_order = IntegerField('Module order', validators=[DataRequired(), NumberRange(min=0)])

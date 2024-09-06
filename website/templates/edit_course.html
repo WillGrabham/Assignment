@@ -1,0 +1,39 @@
+<body>
+<h2>{{course_name}}</h2>
+<div style="display: flex; flex-flow: row wrap">
+    <table>
+        <thead>
+        <tr>
+            <th>Module id</th>
+            <th>Module name</th>
+        </tr>
+        </thead>
+        {% for module in modules: %}
+        <tr>
+            <td>{{module.module_id}}</td>
+            <td>{{module.module_name}}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    <form method="POST" action="{{ url_for('main.edit_course', course_id=course_id) }}">
+        {{ form.hidden_tag() }}
+        <div class="input-field">
+            {{ form.module_id.label }}
+            {{ form.module_id(class="validate") }}
+            {% if form.module_id.errors %}
+            <span>{{ form.module_id.errors[0] }}</span>
+            {% endif %}
+        </div>
+        <div class="input-field">
+            {{ form.module_order.label }}
+            {{ form.module_order(class="validate") }}
+            {% if form.module_order.errors %}
+            <span>{{ form.module_order.errors[0] }}</span>
+            {% endif %}
+        </div>
+        <div class="input-field">
+            <button type="submit">Login</button>
+        </div>
+    </form>
+</div>
+</body>
