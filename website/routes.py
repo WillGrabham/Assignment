@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from flask import redirect, render_template, url_for, Blueprint
+from flask import redirect, render_template, url_for, Blueprint, session
 from flask_login import current_user, login_user, logout_user, login_required
 
 from website import bcrypt, db
@@ -13,7 +13,11 @@ main = Blueprint('main', __name__)
 
 
 def is_tutor():
-    return Tutor.query.filter_by(id=current_user.id).first() is not None
+    return session['account_type'] == 'Tutor'
+
+
+def is_admin():
+    return is_tutor() and current_user.is_admin
 
 
 @main.route('/')
@@ -45,6 +49,7 @@ def home():
 @main.route('/logout')
 def logout():
     logout_user()
+    session.clear()
     return redirect(url_for('main.home'))
 
 
@@ -117,15 +122,13 @@ def create_student():
 
 @main.route('/tutor/login', methods=['GET', 'POST'])
 def tutor_login():
-    print('in tutor login')
     if current_user.is_authenticated:
         return redirect(url_for('main.home'))
     form = TutorLoginForm()
     if form.validate_on_submit():
-        print('is submitted');
         user = Tutor.query.filter_by(tutor_email=form.email.data).first()
         if user and bcrypt.check_password_hash(user.tutor_password, form.password.data):
             login_user(user, remember=form.remember.data)
-            print('user is valid')
+            session['account_type'] = 'Tutor'
             return redirect(url_for('main.home'))
     return render_template('tutor_login.html', title='Tutor Login', form=form)
