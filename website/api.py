@@ -27,5 +27,21 @@ def get_student_grades(student_id):
     return filtered_grades
 
 
+def get_all_modules():
+    return Module.query.all()
+
+
+def get_all_module_ids():
+    modules = get_all_modules()
+    module_ids = []
+    for module in modules:
+        module_ids.append(module.module_id)
+    return module_ids
+
+
+def get_student_enrolments(student_id):
+    return ModuleEnrolment.query.filter_by(student_id=student_id).all()
+
+
 def get_student_name(student_id):
     return Student.query.get(student_id).student_name

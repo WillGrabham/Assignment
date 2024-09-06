@@ -8,7 +8,11 @@
         </script>
         {% for student_id, object in student_grades.items() %}
             <div style="width: 40rem;border: 3px solid black; margin: 10px">
-                <h3 style="text-align: center">{{object.student_name}}</h3>
+                <div style="text-align: center">
+                    <a href="/tutor/edit/{{student_id}}">
+                        <h3>{{object.student_name}}</h3>
+                    </a>
+                </div>
                 <canvas id="chart-{{student_id}}">
                     <script>
                         console.log('module names: ', {{object.module_names | safe}})

@@ -1,16 +1,20 @@
+from datetime import datetime
+
 from flask import redirect, render_template, url_for, Blueprint
 from flask_login import current_user, login_user, logout_user, login_required
 
-from website import bcrypt
-from website.api import get_student_grades, get_student_name, get_students_for_tutor
-from website.forms import TutorLoginForm
-from website.models import Tutor
+from website import bcrypt, db
+from website.api import get_student_grades, get_student_name, get_students_for_tutor, get_all_modules, \
+    get_all_module_ids, get_student_enrolments
+from website.forms import TutorLoginForm, TutorAddStudentGradeForm
+from website.models import Tutor, ModuleEnrolment
 
 main = Blueprint('main', __name__)
 
 
 def is_tutor():
     return Tutor.query.filter_by(id=current_user.id).first() is not None
+
 
 @main.route('/')
 @login_required
@@ -42,6 +46,37 @@ def home():
 def logout():
     logout_user()
     return redirect(url_for('main.home'))
+
+
+@main.route('/tutor/edit/<int:student_id>', methods=['GET', 'POST'])
+@login_required
+def edit_student(student_id):
+    if is_tutor():
+        form = TutorAddStudentGradeForm()
+        if form.validate_on_submit():
+            if (form.module_id.data in get_all_module_ids()) and 0 <= form.grade.data <= 100:
+                student_enrolment_module = ModuleEnrolment.query.get((student_id, form.module_id.data))
+                if student_enrolment_module is not None:
+                    student_enrolment_module.grade = form.grade.data
+                else:
+                    db.session.add(
+                        ModuleEnrolment(student_id=student_id,
+                                        module_id=form.module_id.data,
+                                        grade=form.grade.data,
+                                        grade_date=datetime.now().date()
+                                        )
+                    )
+                db.session.commit()
+                return redirect(url_for('main.edit_student', student_id=student_id))
+        return render_template("edit_student.html",
+                               form=form,
+                               modules=get_all_modules(),
+                               student_id=student_id,
+                               student_name=get_student_name(student_id),
+                               module_enrolments=get_student_enrolments(student_id)
+                               )
+    else:
+        return redirect(url_for('main.home'))
 
 
 @main.route('/tutor/login', methods=['GET', 'POST'])
