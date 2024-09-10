@@ -42,7 +42,7 @@ def home():
                 'module_grades': module_grades
             }
         print(student_grades)
-        return render_template("tutor_home.html", student_grades=student_grades)
+        return render_template("tutor_home.html", student_grades=student_grades, tutor_name=current_user.tutor_name)
     else:
         return render_template("index.html")
 
