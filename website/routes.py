@@ -7,7 +7,7 @@ from website import bcrypt, db
 from website.api import get_student_grades, get_student_name, get_students_for_tutor, get_all_modules, \
     get_all_module_ids, get_student_enrolments, get_all_courses, get_modules_for_course
 from website.forms import TutorLoginForm, TutorAddStudentGradeForm, TutorCreateStudentForm, AdminCreateCourse, \
-    AdminAttachModuleToCourse, AdminCreateModule
+    AdminAttachModuleToCourse, AdminCreateModule, AdminCreateTutor
 from website.models import Tutor, ModuleEnrolment, Student, Course, StudentTutor, CourseModule, Module
 
 main = Blueprint('main', __name__)
@@ -147,6 +147,27 @@ def create_module():
             db.session.commit()
             return redirect(url_for('main.create_module'))
         return render_template("create_module.html", form=form)
+    return redirect(url_for('main.home'))
+
+
+@main.route('/tutor/create', methods=['GET', 'POST'])
+@login_required
+def create_tutor():
+    if is_admin():
+        form = AdminCreateTutor()
+        if form.validate_on_submit():
+            if Tutor.query.filter_by(tutor_email=form.tutor_email.data).first() is None:
+                db.session.add(
+                    Tutor(
+                        tutor_name=form.tutor_name.data,
+                        tutor_email=form.tutor_email.data,
+                        tutor_password=bcrypt.generate_password_hash(form.tutor_password.data),
+                        is_admin=form.tutor_is_admin.data
+                    )
+                )
+                db.session.commit()
+            return redirect(url_for('main.create_tutor'))
+        return render_template("create_tutor.html", form=form)
     return redirect(url_for('main.home'))
 
 

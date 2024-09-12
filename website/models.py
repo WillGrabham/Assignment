@@ -31,7 +31,6 @@ class Student(db.Model, UserMixin):
 class Tutor(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     tutor_name = db.Column(db.String(80), unique=False, nullable=False)
-    tutor_contact_email = db.Column(db.String(80), unique=False, nullable=False)
     tutor_email = db.Column(db.String(80), unique=True, nullable=False)
     tutor_password = db.Column(db.String(80), nullable=False)
     is_admin = db.Column(db.Boolean, default=False)

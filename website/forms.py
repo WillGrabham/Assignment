@@ -36,3 +36,10 @@ class AdminAttachModuleToCourse(FlaskForm):
 
 class AdminCreateModule(FlaskForm):
     module_name = StringField('Module name', validators=[DataRequired()])
+
+
+class AdminCreateTutor(FlaskForm):
+    tutor_name = StringField('Name', validators=[DataRequired()])
+    tutor_email = EmailField('Email', validators=[DataRequired(), Email()])
+    tutor_password = PasswordField('Password', validators=[DataRequired()])
+    tutor_is_admin = BooleanField('Is Admin')

@@ -89,7 +89,6 @@ with app.app_context():
 
     tutor = Tutor(
         tutor_name=tutor_name,
-        tutor_contact_email="some-email@domain.com",
         tutor_email="admin@admin.com",
         tutor_password=generate_password_hash('password').decode('utf-8'),
         is_admin=True,
