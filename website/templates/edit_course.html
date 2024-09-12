@@ -2,24 +2,52 @@
 {% block content %}
 <div class="container">
     <h2 style="margin-top: 1rem">Course: {{course_name}}</h2>
-    <div style="display: flex; flex-flow: row wrap">
-        <table class="table" style="max-width: 30rem">
-            <thead>
-            <tr>
-                <th>Module id</th>
-                <th>Module name</th>
-            </tr>
-            </thead>
-            {% for module in modules: %}
-            <tr>
-                <td>{{module.module_id}}</td>
-                <td>{{module.module_name}}</td>
-            </tr>
-            {% endfor %}
-        </table>
+    <div style="display: flex; flex-flow: row wrap; column-gap: 2rem">
+        <div class="card" style="padding: 1rem">
+            <h5 style="margin: auto">All Modules</h5>
+            <table class="table" style="max-width: 30rem">
+                <thead>
+                <tr>
+                    <th>Module id</th>
+                    <th>Module name</th>
+                </tr>
+                </thead>
+                {% for module in all_modules: %}
+                <tr>
+                    <td>{{module.module_id}}</td>
+                    <td>{{module.module_name}}</td>
+                </tr>
+                {% endfor %}
+            </table>
+            <div style="margin:auto">
+                <a class="btn btn-dark" href="{{ url_for('main.create_module') }}">
+                    Create module
+                </a>
+            </div>
+        </div>
+        <div class="card" style="padding: 1rem">
+            <h5 style="margin: auto">Course's Modules</h5>
+            <table class="table" style="max-width: 30rem">
+                <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Order</th>
+                    <th>Name</th>
+                </tr>
+                </thead>
+                {% for module in course_modules: %}
+                <tr>
+                    <td>{{module.module_id}}</td>
+                    <td>{{module.module_order}}</td>
+                    <td>{{module.module_name}}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
         <div class="card" style="padding: 1rem">
             <form method="POST" action="{{ url_for('main.edit_course', course_id=course_id) }}">
                 {{ form.hidden_tag() }}
+                <h5>Add / Update Module</h5>
                 <div class="mb-3">
                     <div class="form-label">
                         {{ form.module_id.label }}
@@ -39,7 +67,7 @@
                     {% endif %}
                 </div>
                 <div class="input-field">
-                    <button class="btn btn-primary" type="submit">Add to course</button>
+                    <button class="btn btn-primary" type="submit">Submit</button>
                 </div>
             </form>
         </div>

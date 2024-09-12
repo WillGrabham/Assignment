@@ -5,7 +5,7 @@ from flask_login import current_user, login_user, logout_user, login_required
 
 from website import bcrypt, db
 from website.api import get_student_grades, get_student_name, get_students_for_tutor, get_all_modules, \
-    get_all_module_ids, get_student_enrolments, get_all_courses
+    get_all_module_ids, get_student_enrolments, get_all_courses, get_modules_for_course
 from website.forms import TutorLoginForm, TutorAddStudentGradeForm, TutorCreateStudentForm, AdminCreateCourse, \
     AdminAttachModuleToCourse, AdminCreateModule
 from website.models import Tutor, ModuleEnrolment, Student, Course, StudentTutor, CourseModule, Module
@@ -108,21 +108,28 @@ def edit_course(course_id):
         if course is None:
             return redirect(url_for('main.home'))
         if form.validate_on_submit():
-            if Module.query.get(form.module_id.data) is not None:
-                db.session.add(
-                    CourseModule(
-                        course_id=course_id,
-                        module_id=form.module_id.data,
-                        module_order=form.module_order.data,
+            if (Module.query.get(form.module_id.data) is not None and
+                    CourseModule.query.filter_by(course_id=course_id,
+                                                 module_order=form.module_order.data).first() is None):
+                course_module = CourseModule.query.get((course_id, form.module_id.data))
+                if course_module is not None:
+                    course_module.module_order = form.module_order.data
+                else:
+                    db.session.add(
+                        CourseModule(
+                            course_id=course_id,
+                            module_id=form.module_id.data,
+                            module_order=form.module_order.data,
+                        )
                     )
-                )
                 db.session.commit()
                 return redirect(url_for('main.edit_course', course_id=course_id))
         return render_template("edit_course.html",
                                form=form,
                                course_id=course_id,
                                course_name=course.course_name,
-                               modules=get_all_modules())
+                               all_modules=get_all_modules(),
+                               course_modules=get_modules_for_course(course_id))
     return redirect(url_for('main.home'))
 
 

@@ -1,4 +1,4 @@
-from website.models import Student, StudentTutor, ModuleEnrolment, CourseModule, Module, Course
+from website.models import Student, StudentTutor, ModuleEnrolment, CourseModule, Module, Course, DisplayModule
 
 
 def get_students_for_tutor(tutor_id):
@@ -29,6 +29,20 @@ def get_student_grades(student_id):
 
 def get_all_modules():
     return Module.query.all()
+
+
+def module_order(e):
+    return e.module_order
+
+
+def get_modules_for_course(course_id):
+    course_modules = CourseModule.query.filter_by(course_id=course_id).all()
+    filtered_modules = []
+    for course_module in course_modules:
+        module = Module.query.get(course_module.module_id)
+        display_module = DisplayModule(course_module.module_id, course_module.module_order, module.module_name)
+        filtered_modules.append(display_module)
+    return sorted(filtered_modules, key=module_order)
 
 
 def get_all_courses():

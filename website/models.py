@@ -58,3 +58,10 @@ class CourseModule(db.Model):
     course_id = db.Column(db.Integer, db.ForeignKey('course.course_id'), primary_key=True)
     module_id = db.Column(db.Integer, db.ForeignKey('module.module_id'), primary_key=True)
     module_order = db.Column(db.Integer, unique=False, nullable=False)
+
+
+class DisplayModule:
+    def __init__(self, module_id, module_order, module_name):
+        self.module_id = module_id
+        self.module_order = module_order
+        self.module_name = module_name
