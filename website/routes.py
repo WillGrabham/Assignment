@@ -7,7 +7,7 @@ from website import bcrypt, db
 from website.api import get_student_grades, get_student_name, get_students_for_tutor, get_all_modules, \
     get_all_module_ids, get_student_enrolments, get_all_courses
 from website.forms import TutorLoginForm, TutorAddStudentGradeForm, TutorCreateStudentForm, AdminCreateCourse, \
-    AdminAttachModuleToCourse
+    AdminAttachModuleToCourse, AdminCreateModule
 from website.models import Tutor, ModuleEnrolment, Student, Course, StudentTutor, CourseModule, Module
 
 main = Blueprint('main', __name__)
@@ -123,6 +123,23 @@ def edit_course(course_id):
                                course_id=course_id,
                                course_name=course.course_name,
                                modules=get_all_modules())
+    return redirect(url_for('main.home'))
+
+
+@main.route('/module/create', methods=['GET', 'POST'])
+@login_required
+def create_module():
+    if is_admin():
+        form = AdminCreateModule()
+        if form.validate_on_submit():
+            db.session.add(
+                Module(
+                    module_name=form.module_name.data,
+                )
+            )
+            db.session.commit()
+            return redirect(url_for('main.create_module'))
+        return render_template("create_module.html", form=form)
     return redirect(url_for('main.home'))
 
 

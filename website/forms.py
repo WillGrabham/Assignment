@@ -32,3 +32,7 @@ class AdminCreateCourse(FlaskForm):
 class AdminAttachModuleToCourse(FlaskForm):
     module_id = IntegerField('Module id', validators=[DataRequired()])
     module_order = IntegerField('Module order', validators=[DataRequired(), NumberRange(min=0)])
+
+
+class AdminCreateModule(FlaskForm):
+    module_name = StringField('Module name', validators=[DataRequired()])
