@@ -178,11 +178,10 @@ def create_student():
         form = TutorCreateStudentForm()
         if form.validate_on_submit():
             if (Student.query.filter_by(student_email=form.student_email.data).first() is None and
-                    Course.query.filter_by(course_id=form.course_id.data).first() is not None):
+                    Course.query.get(form.course_id.data) is not None):
                 db.session.add(
                     Student(
                         student_email=form.student_email.data,
-                        student_password=bcrypt.generate_password_hash(form.student_password.data),
                         student_name=form.student_name.data,
                         join_date=datetime.now().date(),
                         course_id=form.course_id.data,

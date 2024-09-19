@@ -29,13 +29,11 @@ with app.app_context():
     student = Student(
         student_name=student_name,
         student_email=student_name + "@email.com",
-        student_password=generate_password_hash('password').decode('utf-8'),
         join_date=datetime.now().date(),
         course_id=new_course.course_id)
     student_two = Student(
         student_name=student_name_two,
         student_email=student_name_two + "@email.com",
-        student_password=generate_password_hash('password').decode('utf-8'),
         join_date=datetime.now().date(),
         course_id=new_course.course_id)
     db.session.add(student)

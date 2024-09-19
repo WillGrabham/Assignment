@@ -22,7 +22,6 @@ class Course(db.Model):
 class Student(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     student_email = db.Column(db.String(80), unique=True, nullable=False)
-    student_password = db.Column(db.String(80), unique=False, nullable=False)
     student_name = db.Column(db.String(80), unique=False, nullable=False)
     join_date = db.Column(db.Date, unique=False, nullable=False)
     course_id = db.Column(db.Integer, db.ForeignKey('course.course_id'), unique=False, nullable=False)

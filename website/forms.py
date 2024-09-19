@@ -19,7 +19,6 @@ class TutorAddStudentGradeForm(FlaskForm):
 
 class TutorCreateStudentForm(FlaskForm):
     student_email = EmailField('Email', validators=[DataRequired(), Email()])
-    student_password = PasswordField('Password', validators=[DataRequired()])
     student_name = StringField('Name', validators=[DataRequired()])
     course_id = IntegerField('Course id', validators=[DataRequired()])
     submit = SubmitField('Create student')
