@@ -1,60 +1,48 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="container">
-    <h2 style="text-align: center">Create student</h2>
-    <div style="display: flex; flex-flow: wrap row; column-gap: 2rem">
-        <div class="card" style="padding: 1rem">
-            <h5 style="text-align: center">All courses</h5>
-            <table class="table" style="max-width: 20rem">
-                <thead>
-                <tr>
-                    <th>Course id</th>
-                    <th>Course name</th>
-                </tr>
-                </thead>
-                {% for course in courses: %}
-                <tr>
-                    <td>{{course.course_id}}</td>
-                    <td>{{course.course_name}}</td>
-                </tr>
-                {% endfor %}
-            </table>
-        </div>
-        <div class="card" style="padding: 1rem">
-            <form method="POST" action="{{ url_for('main.create_student') }}">
-                {{ form.hidden_tag() }}
-                <div class="mb-3">
-                    <div class="form-label">
-                        {{ form.student_email.label }}
+    <div class="container">
+        <h2 style="text-align: center">Create student</h2>
+        <div style="display: flex; flex-flow: wrap row; column-gap: 2rem">
+            <div class="card" style="padding: 1rem">
+                <h5 style="text-align: center">All courses</h5>
+                <table class="table" style="max-width: 20rem">
+                    <thead>
+                        <tr>
+                            <th>Course id</th>
+                            <th>Course name</th>
+                        </tr>
+                    </thead>
+                    {% for course in courses: %}
+                        <tr>
+                            <td>{{ course.course_id }}</td>
+                            <td>{{ course.course_name }}</td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+            <div class="card" style="padding: 1rem">
+                <form method="POST" action="{{ url_for("main.create_student") }}">
+                    {{ form.hidden_tag() }}
+                    <div class="mb-3">
+                        <div class="form-label">{{ form.student_email.label }}</div>
+                        {{ form.student_email(class="validate") }}
+                        {% if form.student_email.errors %}<span>{{ form.student_email.errors[0] }}</span>{% endif %}
                     </div>
-                    {{ form.student_email(class="validate") }}
-                    {% if form.student_email.errors %}
-                    <span>{{ form.student_email.errors[0] }}</span>
-                    {% endif %}
-                </div>
-                <div class="mb-3">
-                    <div class="form-label">
-                        {{ form.student_name.label }}
+                    <div class="mb-3">
+                        <div class="form-label">{{ form.student_name.label }}</div>
+                        {{ form.student_name(class="validate") }}
+                        {% if form.student_name.errors %}<span>{{ form.student_name.errors[0] }}</span>{% endif %}
                     </div>
-                    {{ form.student_name(class="validate") }}
-                    {% if form.student_name.errors %}
-                    <span>{{ form.student_name.errors[0] }}</span>
-                    {% endif %}
-                </div>
-                <div class="mb-3">
-                    <div class="form-label">
-                        {{ form.course_id.label }}
+                    <div class="mb-3">
+                        <div class="form-label">{{ form.course_id.label }}</div>
+                        {{ form.course_id(class="validate") }}
+                        {% if form.course_id.errors %}<span>{{ form.course_id.errors[0] }}</span>{% endif %}
                     </div>
-                    {{ form.course_id(class="validate") }}
-                    {% if form.course_id.errors %}
-                    <span>{{ form.course_id.errors[0] }}</span>
-                    {% endif %}
-                </div>
-                <div>
-                    <button class="btn btn-primary" type="submit">Submit</button>
-                </div>
-            </form>
+                    <div>
+                        <button class="btn btn-primary" type="submit">Submit</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
-</div>
 {% endblock %}

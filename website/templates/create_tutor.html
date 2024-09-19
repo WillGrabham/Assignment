@@ -1,43 +1,31 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="container">
-    <h2>Create tutor</h2>
-    <form method="POST" action="{{ url_for('main.create_tutor') }}">
-        {{ form.hidden_tag() }}
-        <div class="mb-3">
-            <div class="form-label">
-                {{ form.tutor_name.label }}
+    <div class="container">
+        <h2>Create tutor</h2>
+        <form method="POST" action="{{ url_for("main.create_tutor") }}">
+            {{ form.hidden_tag() }}
+            <div class="mb-3">
+                <div class="form-label">{{ form.tutor_name.label }}</div>
+                {{ form.tutor_name(class="validate") }}
+                {% if form.tutor_name.errors %}<span>{{ form.tutor_name.errors[0] }}</span>{% endif %}
             </div>
-            {{ form.tutor_name(class="validate") }}
-            {% if form.tutor_name.errors %}
-            <span>{{ form.tutor_name.errors[0] }} </span>
-            {% endif %}
-        </div>
-        <div class="mb-3">
-            <div class="form-label">
-                {{ form.tutor_email.label }}
+            <div class="mb-3">
+                <div class="form-label">{{ form.tutor_email.label }}</div>
+                {{ form.tutor_email(class="validate") }}
+                {% if form.tutor_email.errors %}<span>{{ form.tutor_email.errors[0] }}</span>{% endif %}
             </div>
-            {{ form.tutor_email(class="validate") }}
-            {% if form.tutor_email.errors %}
-            <span>{{ form.tutor_email.errors[0] }} </span>
-            {% endif %}
-        </div>
-        <div class="mb-3">
-            <div class="form-label">
-                {{ form.tutor_password.label }}
+            <div class="mb-3">
+                <div class="form-label">{{ form.tutor_password.label }}</div>
+                {{ form.tutor_password(class="validate") }}
+                {% if form.tutor_password.errors %}<span>{{ form.tutor_password.errors[0] }}</span>{% endif %}
             </div>
-            {{ form.tutor_password(class="validate") }}
-            {% if form.tutor_password.errors %}
-            <span>{{ form.tutor_password.errors[0] }} </span>
-            {% endif %}
-        </div>
-        <div class="mb-3">
-            <div class="form-check-label">
-                {{ form.tutor_is_admin(class="validate") }}
-                {{ form.tutor_is_admin.label }}
+            <div class="mb-3">
+                <div class="form-check-label">
+                    {{ form.tutor_is_admin(class="validate") }}
+                    {{ form.tutor_is_admin.label }}
+                </div>
             </div>
-        </div>
-        <button class="btn btn-primary" type="submit">Create</button>
-    </form>
-</div>
+            <button class="btn btn-primary" type="submit">Create</button>
+        </form>
+    </div>
 {% endblock %}

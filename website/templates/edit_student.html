@@ -1,69 +1,62 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="container">
-    <h1 style="text-align: center">{{ student_name }}</h1>
-    <div class="d-flex flex-wrap justify-content-evenly">
-        <div>
-            <div class="card" style="padding: 1rem; margin-bottom: 1rem">
-                <h5 class="card-title">All Modules</h5>
-                <table class="table" style="max-width: 40rem">
-                    <thead>
-                    <tr>
-                        <th>Module id</th>
-                        <th>Module name</th>
-                    </tr>
-                    </thead>
-                    {% for module in modules: %}
-                    <tr>
-                        <td>{{module.module_id}}</td>
-                        <td>{{module.module_name}}</td>
-                    </tr>
-                    {% endfor %}
-                </table>
-            </div>
-            <div class="card" style="padding: 1rem">
-                <h5 class="card-title">Results</h5>
-                <table class="table" style="max-width: 20rem">
-                    <thead>
-                    <tr>
-                        <th>Module id</th>
-                        <th>Grade</th>
-                    </tr>
-                    </thead>
-                    {% for enrolment in module_enrolments %}
-                    <tr>
-                        <td>{{enrolment.module_id}}</td>
-                        <td>{{enrolment.grade}}</td>
-                    </tr>
-                    {% endfor %}
-                </table>
-            </div>
-        </div>
-        <div class="card" style="padding: 2rem">
-            <h5 class="card-title">Add / Update Grade</h5>
-            <form method="POST" action="{{ url_for('main.edit_student', student_id=student_id) }}">
-                {{form.hidden_tag()}}
-                <div class="mb-3">
-                    <div class="form-label">
-                        {{ form.module_id.label }}
-                    </div>
-                    {{ form.module_id(class="validate") }}
-                    {% if form.module_id.errors %}
-                    <span>{{ form.module_id.errors[0] }}</span>
-                    {% endif %}
+    <div class="container">
+        <h1 style="text-align: center">{{ student_name }}</h1>
+        <div class="d-flex flex-wrap justify-content-evenly">
+            <div>
+                <div class="card" style="padding: 1rem; margin-bottom: 1rem">
+                    <h5 class="card-title">All Modules</h5>
+                    <table class="table" style="max-width: 40rem">
+                        <thead>
+                            <tr>
+                                <th>Module id</th>
+                                <th>Module name</th>
+                            </tr>
+                        </thead>
+                        {% for module in modules: %}
+                            <tr>
+                                <td>{{ module.module_id }}</td>
+                                <td>{{ module.module_name }}</td>
+                            </tr>
+                        {% endfor %}
+                    </table>
                 </div>
-                <div class="mb-3">
-                    <div class="form-label">
-                        {{ form.grade.label }}
-                    </div>
-                    {{ form.grade(class="validate") }}
-                    {% if form.grade.errors %}
-                    <span>{{ form.grade.errors[0] }}</span>
-                    {% endif %}
+                <div class="card" style="padding: 1rem">
+                    <h5 class="card-title">Results</h5>
+                    <table class="table" style="max-width: 20rem">
+                        <thead>
+                            <tr>
+                                <th>Module id</th>
+                                <th>Grade</th>
+                            </tr>
+                        </thead>
+                        {% for enrolment in module_enrolments %}
+                            <tr>
+                                <td>{{ enrolment.module_id }}</td>
+                                <td>{{ enrolment.grade }}</td>
+                            </tr>
+                        {% endfor %}
+                    </table>
                 </div>
-                <button class="btn btn-primary" type="submit">Submit</button>
-            </form>
+            </div>
+            <div class="card" style="padding: 2rem">
+                <h5 class="card-title">Add / Update Grade</h5>
+                <form method="POST"
+                      action="{{ url_for('main.edit_student', student_id=student_id) }}">
+                    {{ form.hidden_tag() }}
+                    <div class="mb-3">
+                        <div class="form-label">{{ form.module_id.label }}</div>
+                        {{ form.module_id(class="validate") }}
+                        {% if form.module_id.errors %}<span>{{ form.module_id.errors[0] }}</span>{% endif %}
+                    </div>
+                    <div class="mb-3">
+                        <div class="form-label">{{ form.grade.label }}</div>
+                        {{ form.grade(class="validate") }}
+                        {% if form.grade.errors %}<span>{{ form.grade.errors[0] }}</span>{% endif %}
+                    </div>
+                    <button class="btn btn-primary" type="submit">Submit</button>
+                </form>
+            </div>
         </div>
     </div>
-</div>
 {% endblock %}

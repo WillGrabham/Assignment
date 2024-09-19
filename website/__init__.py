@@ -17,5 +17,6 @@ def create_app():
     bcrypt.init_app(app)
     login_manager.init_app(app)
     from website.routes import main
+
     app.register_blueprint(main)
     return app

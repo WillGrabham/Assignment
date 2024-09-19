@@ -1,21 +1,22 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="container">
-    <h2 style="margin-top: 2rem; margin-bottom: 2rem">Create a course</h2>
-    <form method="POST" action="{{ url_for('main.create_course') }}">
-        {{ form.hidden_tag() }}
-        <div class="mb-3">
-            <div class="form-label">
-                {{ form.course_name.label }}
+    <div class="container">
+        <h2 style="margin-top: 2rem; margin-bottom: 2rem">Create a course</h2>
+        <form method="POST" action="{{ url_for("main.create_course") }}">
+            {{ form.hidden_tag() }}
+            <div class="mb-3">
+                <div class="form-label">{{ form.course_name.label }}</div>
+                <input type="text"
+                       class="form-control validate"
+                       id="course_name"
+                       name="course_name"
+                       value=""
+                       required="">
+                {% if form.course_name.errors %}<span>{{ form.course_name.errors[0] }}</span>{% endif %}
             </div>
-            <input type="text" class="form-control validate" id="course_name" name="course_name" value="" required="">
-            {% if form.course_name.errors %}
-            <span>{{ form.course_name.errors[0] }}</span>
-            {% endif %}
-        </div>
-        <div>
-            <button class="btn btn-primary" type="submit">Create</button>
-        </div>
-    </form>
-</div>
+            <div>
+                <button class="btn btn-primary" type="submit">Create</button>
+            </div>
+        </form>
+    </div>
 {% endblock %}

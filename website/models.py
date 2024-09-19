@@ -6,9 +6,9 @@ from website import db, login_manager
 
 @login_manager.user_loader
 def load_user(user_id):
-    if session['account_type'] == 'Student':
+    if session["account_type"] == "Student":
         return Student.query.get(int(user_id))
-    elif session['account_type'] == 'Tutor':
+    elif session["account_type"] == "Tutor":
         return Tutor.query.get(int(user_id))
     else:
         return None
@@ -24,7 +24,9 @@ class Student(db.Model, UserMixin):
     student_email = db.Column(db.String(80), unique=True, nullable=False)
     student_name = db.Column(db.String(80), unique=False, nullable=False)
     join_date = db.Column(db.Date, unique=False, nullable=False)
-    course_id = db.Column(db.Integer, db.ForeignKey('course.course_id'), unique=False, nullable=False)
+    course_id = db.Column(
+        db.Integer, db.ForeignKey("course.course_id"), unique=False, nullable=False
+    )
 
 
 class Tutor(db.Model, UserMixin):
@@ -36,13 +38,15 @@ class Tutor(db.Model, UserMixin):
 
 
 class StudentTutor(db.Model):
-    student_id = db.Column(db.Integer, db.ForeignKey('student.id'), primary_key=True)
-    tutor_id = db.Column(db.Integer, db.ForeignKey('tutor.id'), primary_key=True)
+    student_id = db.Column(db.Integer, db.ForeignKey("student.id"), primary_key=True)
+    tutor_id = db.Column(db.Integer, db.ForeignKey("tutor.id"), primary_key=True)
 
 
 class ModuleEnrolment(db.Model):
-    student_id = db.Column(db.Integer, db.ForeignKey('student.id'), primary_key=True)
-    module_id = db.Column(db.Integer, db.ForeignKey('module.module_id'), primary_key=True)
+    student_id = db.Column(db.Integer, db.ForeignKey("student.id"), primary_key=True)
+    module_id = db.Column(
+        db.Integer, db.ForeignKey("module.module_id"), primary_key=True
+    )
     grade = db.Column(db.Integer, unique=False, nullable=True)
     grade_date = db.Column(db.Date, unique=False, nullable=True)
 
@@ -53,8 +57,12 @@ class Module(db.Model):
 
 
 class CourseModule(db.Model):
-    course_id = db.Column(db.Integer, db.ForeignKey('course.course_id'), primary_key=True)
-    module_id = db.Column(db.Integer, db.ForeignKey('module.module_id'), primary_key=True)
+    course_id = db.Column(
+        db.Integer, db.ForeignKey("course.course_id"), primary_key=True
+    )
+    module_id = db.Column(
+        db.Integer, db.ForeignKey("module.module_id"), primary_key=True
+    )
     module_order = db.Column(db.Integer, unique=False, nullable=False)
 
 
