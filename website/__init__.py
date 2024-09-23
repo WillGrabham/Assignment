@@ -8,6 +8,7 @@ from website.config import Config
 db = SQLAlchemy()
 bcrypt = Bcrypt()
 login_manager = LoginManager()
+login_manager.login_view = "main.tutor_login"
 
 
 def create_app():

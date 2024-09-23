@@ -27,21 +27,28 @@
              style="margin-bottom: 1rem">
             <div class="container-fluid">
                 <a class="navbar-brand" href="{{ url_for("main.home") }}">Grade Tracker</a>
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                {% if current_user.is_authenticated %}
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for("main.home") }}">Home</a>
+                            <a class="nav-link" href="{{ url_for("main.create_student") }}">Create Student</a>
                         </li>
-                        {% if current_user.is_authenticated %}
+                        {% if current_user.is_admin %}
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ url_for("main.logout") }}">Logout</a>
+                                <a class="nav-link" href="{{ url_for("main.create_tutor") }}">Create Tutor</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for("main.create_course") }}">Create Course</a>
                             </li>
                         {% endif %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for("main.tutor_login") }}">Login</a>
+                    </ul>
+                    <ul class="navbar-nav">
+                        <li>
+                            <li class="nav-item me-auto">
+                                <a class="nav-link" href="{{ url_for("main.logout") }}">Logout</a>
+                            </li>
                         </li>
                     </ul>
-                </div>
+                {% endif %}
             </div>
         </nav>
         <div class="container-fluid">

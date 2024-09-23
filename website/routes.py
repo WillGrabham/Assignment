@@ -14,6 +14,7 @@ from website.api import (
     get_student_enrolments,
     get_all_courses,
     get_modules_for_course,
+    get_student_course,
 )
 from website.forms import (
     TutorLoginForm,
@@ -113,6 +114,7 @@ def edit_student(student_id):
         modules=get_all_modules(),
         student_id=student_id,
         student_name=get_student_name(student_id),
+        student_course=get_student_course(student_id),
         module_enrolments=get_student_enrolments(student_id),
         success_message=success_message,
         error_message=error_message,
