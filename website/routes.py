@@ -86,6 +86,8 @@ def logout():
 def edit_student(student_id):
     if is_tutor():
         form = TutorAddStudentGradeForm()
+        success_message = None
+        error_message = None
         if form.validate_on_submit():
             if (
                 form.module_id.data in get_all_module_ids()
@@ -105,7 +107,10 @@ def edit_student(student_id):
                         )
                     )
                 db.session.commit()
-                return redirect(url_for("main.edit_student", student_id=student_id))
+                form = TutorAddStudentGradeForm(formdata=None)
+                success_message = "Completed successfully"
+            else:
+                error_message = "Module id was not found"
         return render_template(
             "edit_student.html",
             form=form,
@@ -113,6 +118,8 @@ def edit_student(student_id):
             student_id=student_id,
             student_name=get_student_name(student_id),
             module_enrolments=get_student_enrolments(student_id),
+            success_message=success_message,
+            error_message=error_message,
         )
     else:
         return redirect(url_for("main.home"))
@@ -136,18 +143,25 @@ def create_course():
 @login_required
 def edit_course(course_id):
     if is_admin():
+        success_message = None
+        error_message = None
         form = AdminAttachModuleToCourse()
         course = Course.query.get(course_id)
         if course is None:
             return redirect(url_for("main.home"))
         if form.validate_on_submit():
-            if (
-                Module.query.get(form.module_id.data) is not None
-                and CourseModule.query.filter_by(
+            success_message = None
+            error_message = None
+            if Module.query.get(form.module_id.data) is None:
+                error_message = "Module id was not found"
+            elif (
+                CourseModule.query.filter_by(
                     course_id=course_id, module_order=form.module_order.data
                 ).first()
-                is None
+                is not None
             ):
+                error_message = "The order number was already taken"
+            else:
                 course_module = CourseModule.query.get((course_id, form.module_id.data))
                 if course_module is not None:
                     course_module.module_order = form.module_order.data
@@ -160,7 +174,8 @@ def edit_course(course_id):
                         )
                     )
                 db.session.commit()
-                return redirect(url_for("main.edit_course", course_id=course_id))
+                success_message = "Completed successfully"
+                form = AdminAttachModuleToCourse(formdata=None)
         return render_template(
             "edit_course.html",
             form=form,
@@ -168,6 +183,8 @@ def edit_course(course_id):
             course_name=course.course_name,
             all_modules=get_all_modules(),
             course_modules=get_modules_for_course(course_id),
+            success_message=success_message,
+            error_message=error_message,
         )
     return redirect(url_for("main.home"))
 
@@ -177,6 +194,7 @@ def edit_course(course_id):
 def create_module():
     if is_admin():
         form = AdminCreateModule()
+        success_message = None
         if form.validate_on_submit():
             db.session.add(
                 Module(
@@ -184,8 +202,11 @@ def create_module():
                 )
             )
             db.session.commit()
-            return redirect(url_for("main.create_module"))
-        return render_template("create_module.html", form=form)
+            success_message = "Completed successfully"
+            form = AdminCreateModule(formdata=None)
+        return render_template(
+            "create_module.html", form=form, success_message=success_message
+        )
     return redirect(url_for("main.home"))
 
 
@@ -256,10 +277,15 @@ def tutor_login():
     if current_user.is_authenticated:
         return redirect(url_for("main.home"))
     form = TutorLoginForm()
+    error_message = None
     if form.validate_on_submit():
         user = Tutor.query.filter_by(tutor_email=form.email.data).first()
         if user and bcrypt.check_password_hash(user.tutor_password, form.password.data):
             login_user(user, remember=form.remember.data)
             session["account_type"] = "Tutor"
             return redirect(url_for("main.home"))
-    return render_template("tutor_login.html", title="Tutor Login", form=form)
+        else:
+            error_message = "Incorrect email or password."
+    return render_template(
+        "tutor_login.html", title="Tutor Login", form=form, error_message=error_message
+    )

@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
     <div class="container">
+        {% if success_message %}<div class="alert alert-success" role="alert">{{ success_message }}</div>{% endif %}
         <h2>Create Module</h2>
         <form method="POST" action="{{ url_for("main.create_module") }}">
             {{ form.hidden_tag() }}
@@ -9,8 +10,8 @@
                 {{ form.module_name(class="validate") }}
                 {% if form.module_name.errors %}<span>{{ form.module_name.errors[0] }}</span>{% endif %}
             </div>
-            <div class="input-field">
-                <button type="submit">Create</button>
+            <div>
+                <button class="btn btn-primary" type="submit">Create</button>
             </div>
         </form>
     </div>

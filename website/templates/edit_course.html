@@ -24,7 +24,7 @@
                 </div>
             </div>
             <div class="card" style="padding: 1rem">
-                <h5 style="margin: auto">Course's Modules</h5>
+                <h5 style="margin-left: auto; margin-right: auto">Course's Modules</h5>
                 <table class="table" style="max-width: 30rem">
                     <thead>
                         <tr>
@@ -46,6 +46,8 @@
                 <form method="POST"
                       action="{{ url_for('main.edit_course', course_id=course_id) }}">
                     {{ form.hidden_tag() }}
+                    {% if success_message %}<div class="alert alert-success" role="alert">{{ success_message }}</div>{% endif %}
+                    {% if error_message %}<div class="alert alert-danger" role="alert">{{ error_message }}</div>{% endif %}
                     <h5>Add / Update Module</h5>
                     <div class="mb-3">
                         <div class="form-label">{{ form.module_id.label }}</div>
