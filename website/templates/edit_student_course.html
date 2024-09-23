@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="container">
+        <div style="text-align: center">
+            <h1 style="margin: auto; display: inline">{{ student_name }}</h1>
+            <a class="link-secondary"
+               href="{{ url_for('main.edit_course', course_id=student_course.course_id) }}">({{
+                student_course.course_name
+            }})</a>
+        </div>
+        <div style="display: flex; flex-flow: wrap row; column-gap: 2rem">
+            <div class="card" style="padding: 1rem">
+                <h5 style="text-align: center">All courses</h5>
+                <table class="table" style="max-width: 20rem">
+                    <thead>
+                        <tr>
+                            <th>Course id</th>
+                            <th>Course name</th>
+                        </tr>
+                    </thead>
+                    {% for course in courses: %}
+                        <tr>
+                            <td>{{ course.course_id }}</td>
+                            <td>{{ course.course_name }}</td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+            <div class="card" style="padding: 1rem">
+                {% if error_message %}<div class="alert alert-danger" role="alert">{{ error_message }}</div>{% endif %}
+                <form method="POST"
+                      action="{{ url_for("main.edit_student_course", student_id=student_id) }}">
+                    {{ form.hidden_tag() }}
+                    <div class="mb-3">
+                        <div class="form-label">{{ form.course_id.label }}</div>
+                        {{ form.course_id(class="validate") }}
+                        {% if form.course_id.errors %}<span>{{ form.course_id.errors[0] }}</span>{% endif %}
+                    </div>
+                    <div>
+                        <button class="btn btn-primary" type="submit">Change course</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

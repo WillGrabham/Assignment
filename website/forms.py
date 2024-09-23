@@ -19,6 +19,11 @@ class TutorAddStudentGradeForm(FlaskForm):
     submit = SubmitField("Add Grade")
 
 
+class TutorChangeStudentCourseForm(FlaskForm):
+    course_id = IntegerField("Course id", validators=[DataRequired()])
+    submit = SubmitField("Change Course")
+
+
 class TutorCreateStudentForm(FlaskForm):
     student_email = EmailField("Email", validators=[DataRequired(), Email()])
     student_name = StringField("Name", validators=[DataRequired()])

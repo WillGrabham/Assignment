@@ -24,6 +24,7 @@ from website.forms import (
     AdminAttachModuleToCourse,
     AdminCreateModule,
     AdminCreateTutor,
+    TutorChangeStudentCourseForm,
 )
 from website.models import (
     Tutor,
@@ -118,6 +119,29 @@ def edit_student(student_id):
         module_enrolments=get_student_enrolments(student_id),
         success_message=success_message,
         error_message=error_message,
+    )
+
+
+@main.route("/student/<int:student_id>/course", methods=["GET", "POST"])
+@login_required
+def edit_student_course(student_id):
+    error_message = None
+    form = TutorChangeStudentCourseForm()
+    if form.validate_on_submit():
+        if Course.query.get(form.course_id.data) is None:
+            error_message = "Course does not exist"
+        else:
+            student = Student.query.get(student_id)
+            student.course_id = form.course_id.data
+            return redirect(url_for("main.edit_student", student_id=student.id))
+    return render_template(
+        "edit_student_course.html",
+        form=form,
+        student_name=get_student_name(student_id),
+        student_course=get_student_course(student_id),
+        error_message=error_message,
+        courses=get_all_courses(),
+        student_id=student_id,
     )
 
 
