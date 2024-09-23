@@ -102,6 +102,13 @@ with app.app_context():
         is_admin=True,
     )
     db.session.add(tutor)
+    non_admin_tutor = Tutor(
+        tutor_name="Alfie",
+        tutor_email="non-admin@admin.com",
+        tutor_password=generate_password_hash("password").decode("utf-8"),
+        is_admin=False,
+    )
+    db.session.add(non_admin_tutor)
     db.session.commit()
 
     new_tutor = Tutor.query.filter_by(tutor_name=tutor_name).first()

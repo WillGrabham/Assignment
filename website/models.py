@@ -1,4 +1,3 @@
-from flask import session
 from flask_login import UserMixin
 
 from website import db, login_manager
@@ -6,12 +5,7 @@ from website import db, login_manager
 
 @login_manager.user_loader
 def load_user(user_id):
-    if session["account_type"] == "Student":
-        return Student.query.get(int(user_id))
-    elif session["account_type"] == "Tutor":
-        return Tutor.query.get(int(user_id))
-    else:
-        return None
+    return Tutor.query.get(int(user_id))
 
 
 class Course(db.Model):
