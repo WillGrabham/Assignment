@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="container">
+        {% if error_message %}<div class="alert alert-danger" role="alert">{{ error_message }}</div>{% endif %}
+        {% if success_message %}<div class="alert alert-success" role="alert">{{ success_message }}</div>{% endif %}
+        <h1>Tutors</h1>
+        <table class="table" style="max-width: 40rem">
+            <thead>
+                <tr>
+                    <th>id</th>
+                    <th>name</th>
+                    <th>email</th>
+                    <th></th>
+                </tr>
+                {% for tutor in tutors %}
+                    <tr>
+                        <td>{{ tutor.id }}</td>
+                        <td>{{ tutor.tutor_name }}</td>
+                        <td>{{ tutor.tutor_email }}</td>
+                        <td>
+                            <form action="{{ url_for('main.delete_tutor', tutor_id=tutor.id) }}"
+                                  method="POST"
+                                  style="display:inline"
+                                  onsubmit="event.preventDefault(); this.submit()">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                <button type="submit" class="btn btn-primary">delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </thead>
+        </table>
+        <a class="btn btn-dark" href="{{ url_for("main.create_tutor") }}">Create tutor</a>
+    </div>
+{% endblock %}

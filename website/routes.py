@@ -1,7 +1,7 @@
 from datetime import datetime
 from functools import wraps
 
-from flask import redirect, render_template, url_for, Blueprint
+from flask import redirect, render_template, url_for, Blueprint, flash
 from flask_login import current_user, login_user, logout_user, login_required
 
 from website import bcrypt, db
@@ -283,6 +283,29 @@ def create_student():
         form=form,
         courses=get_all_courses(),
     )
+
+
+@main.route("/tutors", methods=["GET", "POST"])
+@login_required
+@admin_required
+def view_tutors():
+    return render_template("tutor_view.html", tutors=Tutor.query.all())
+
+
+@main.route("/tutor/<int:tutor_id>/delete", methods=["POST"])
+@login_required
+@admin_required
+def delete_tutor(tutor_id):
+    tutor = Tutor.query.get(tutor_id)
+    if tutor is None:
+        flash("Tutor could not be deleted, please try again", "error")
+    elif tutor == current_user:
+        flash("You cannot delete your own account", "error")
+    else:
+        db.session.delete(tutor)
+        db.session.commit()
+        flash("Tutor deleted successfully", "success")
+    return redirect(url_for("main.view_tutors"))
 
 
 @main.route("/login", methods=["GET", "POST"])
