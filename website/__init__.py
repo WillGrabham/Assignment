@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, render_template
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
@@ -15,6 +15,7 @@ csrf = CSRFProtect()
 
 def create_app():
     app = Flask(__name__)
+    app.register_error_handler(404, not_found)
     app.config.from_object(Config)
     db.init_app(app)
     bcrypt.init_app(app)
@@ -25,3 +26,7 @@ def create_app():
 
     app.register_blueprint(main)
     return app
+
+
+def not_found(error):
+    return render_template("not_found.html"), 404
