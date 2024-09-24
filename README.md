@@ -8,5 +8,7 @@
 4. Run `flask --app 'app' run`
 
 Before committing:
+
 1. Run `djlint . --reformat`
 2. Run `black .`
+3. Run unittests: 
