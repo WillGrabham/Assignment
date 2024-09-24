@@ -37,7 +37,10 @@
                                 <a class="nav-link" href="{{ url_for("main.create_course") }}">Create Course</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ url_for("main.view_tutors") }}">View Tutors</a>
+                                <a class="nav-link" href="{{ url_for("main.create_module") }}">Create Module</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for("main.view_tutors") }}">Tutors</a>
                             </li>
                         {% endif %}
                     </ul>
@@ -52,23 +55,19 @@
             </div>
         </nav>
         <div class="container-fluid">
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if
-                messages %}
-                {% for category, message in messages %}
-                    {% if category ==
-                        'error' %}
-                        <div class="alert alert-danger alter-dismissable fade show" role="alert">
-                            {{ message }}
-                        </div>
-                    {% else %}
-                        <div class="alert alert-success alter-dismissable fade show" role="alert">
-                            {{ message }}
-                        </div>
-                    {% endif %}
-                {% endfor %}
-            {% endif %}
-        {% endwith %}
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if
+                    messages %}
+                    {% for category, message in messages %}
+                        {% if category ==
+                            'error' %}
+                            <div class="alert alert-danger alter-dismissable fade show" role="alert">{{ message }}</div>
+                        {% else %}
+                            <div class="alert alert-success alter-dismissable fade show" role="alert">{{ message }}</div>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
             {% block content %}{% endblock %}
         </div>
     </body>
