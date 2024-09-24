@@ -41,8 +41,8 @@ class ModuleEnrolment(db.Model):
     module_id = db.Column(
         db.Integer, db.ForeignKey("module.module_id"), primary_key=True
     )
-    grade = db.Column(db.Integer, unique=False, nullable=True)
-    grade_date = db.Column(db.Date, unique=False, nullable=True)
+    grade = db.Column(db.Integer, unique=False, nullable=False)
+    grade_date = db.Column(db.Date, unique=False, nullable=False)
 
 
 class Module(db.Model):
