@@ -2,6 +2,7 @@
 {% block content %}
     <div class="container">
         <h2 style="margin-top: 2rem; margin-bottom: 2rem">Create a course</h2>
+        <!--Create course form which asks user for a course name-->
         <form method="POST" action="{{ url_for("main.create_course") }}">
             {{ form.hidden_tag() }}
             <div class="mb-3">

@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
     <div class="container">
+        <!-- Simple form with email, password, remember me box used for logging in -->
         {% if error_message %}<div class="alert alert-danger" role="alert">{{ error_message }}</div>{% endif %}
         <h2>Login</h2>
         <form method="POST" action="{{ url_for("main.tutor_login") }}">

@@ -1,7 +1,9 @@
 {% extends "base.html" %}
 {% block content %}
     <div class="container">
+        <!--User is likely going to want to create multiple modules at once, so success_message is used to show successful creation-->
         {% if success_message %}<div class="alert alert-success" role="alert">{{ success_message }}</div>{% endif %}
+        <!--Form which asks user for module name -->
         <h2>Create Module</h2>
         <form method="POST" action="{{ url_for("main.create_module") }}">
             {{ form.hidden_tag() }}

@@ -14,17 +14,17 @@ def get_students_for_tutor(tutor_id):
 
 
 def get_student_grades(student_id):
+    # Find the student's enrolled course, get list of module ids associated with course
     enrolled_course_id = Student.query.get(student_id).course_id
-    valid_course_modules = CourseModule.query.filter_by(
-        course_id=enrolled_course_id
-    ).all()
-    valid_course_module_ids = []
-    for valid_course_module in valid_course_modules:
-        valid_course_module_ids.append(valid_course_module.module_id)
+    course_modules = CourseModule.query.filter_by(course_id=enrolled_course_id).all()
+    course_module_ids = []
+    for valid_course_module in course_modules:
+        course_module_ids.append(valid_course_module.module_id)
     all_enrolments = ModuleEnrolment.query.filter_by(student_id=student_id).all()
     filtered_grades = dict()
+    # Find overlap between student's completed modules, and their enrolled course's modules, add to dictionary
     for enrolment in all_enrolments:
-        if enrolment.module_id in valid_course_module_ids:
+        if enrolment.module_id in course_module_ids:
             filtered_grades[enrolment.module_id] = {
                 "module_grade": enrolment.grade,
                 "module_name": Module.query.get(enrolment.module_id).module_name,
@@ -40,6 +40,7 @@ def module_order(e):
     return e.module_order
 
 
+# Return a list of modules for a course, sorted by module order, and includes module name.
 def get_modules_for_course(course_id):
     course_modules = CourseModule.query.filter_by(course_id=course_id).all()
     filtered_modules = []

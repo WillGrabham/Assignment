@@ -3,6 +3,7 @@
     <div class="container">
         <h2 style="text-align: center">Create student</h2>
         <div style="display: flex; flex-flow: wrap row; column-gap: 2rem">
+            <!-- User needs to reference courses when creating a student -->
             <div class="card" style="padding: 1rem">
                 <h5 style="text-align: center">All courses</h5>
                 <table class="table" style="max-width: 20rem">
@@ -21,6 +22,8 @@
                 </table>
             </div>
             <div class="card" style="padding: 1rem">
+                <!-- A form to create a student which asks the user for student's email address, name, and course, and displays an error message if it fails -->
+                {% if error_message %}<div class="alert alert-danger" role="alert">{{ error_message }}</div>{% endif %}
                 <form method="POST" action="{{ url_for("main.create_student") }}">
                     {{ form.hidden_tag() }}
                     <div class="mb-3">

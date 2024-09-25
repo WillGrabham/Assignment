@@ -9,12 +9,14 @@
             }})</a>
             /
             <small>
+                <!-- Allow user to change a student's course -->
                 <a class="link-secondary"
                    href="{{ url_for('main.edit_student_course', student_id=student_id) }}">Edit Course</a>
             </small>
         </div>
         <div class="d-flex flex-wrap justify-content-evenly">
             <div>
+                <!-- Not the clearest UI, but display all the modules in the database, so the user can reference this when adding module to student-->
                 <div class="card" style="padding: 1rem; margin-bottom: 1rem">
                     <h5 class="card-title">All Modules</h5>
                     <table class="table" style="max-width: 40rem">
@@ -32,6 +34,7 @@
                         {% endfor %}
                     </table>
                 </div>
+                <!-- Display all modules the student has been enrolled on-->
                 <div class="card" style="padding: 1rem">
                     <h5 class="card-title">Results</h5>
                     <table class="table" style="max-width: 20rem">
@@ -50,6 +53,7 @@
                     </table>
                 </div>
             </div>
+            <!-- A form for a tutor to add/edit a student's grade -->
             <div class="card" style="padding: 2rem">
                 {% if success_message %}<div class="alert alert-success" role="alert">{{ success_message }}</div>{% endif %}
                 {% if error_message %}<div class="alert alert-danger" role="alert">{{ error_message }}</div>{% endif %}

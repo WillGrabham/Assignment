@@ -52,18 +52,19 @@ def admin_required(f):
 @main.route("/")
 @login_required
 def home():
-    student_tutors = get_students_for_tutor(current_user.id)
+    students = get_students_for_tutor(current_user.id)
     student_grades = dict()
-    for student_tutor in student_tutors:
-        id_to_modules = get_student_grades(student_tutor.student_id)
+    for student in students:
+        module_id_to_enrolment = get_student_grades(student.student_id)
         module_names = []
         module_grades = []
-
-        for id_to_module in id_to_modules.items():
+        # Iterate over student's enrolments, adding module name and grade to separate lists
+        for id_to_module in module_id_to_enrolment.items():
             module_names.append(id_to_module[1].get("module_name"))
             module_grades.append(id_to_module[1].get("module_grade"))
-        student_grades[student_tutor.student_id] = {
-            "student_name": get_student_name(student_tutor.student_id),
+        # Add student's grades to dictionary
+        student_grades[student.student_id] = {
+            "student_name": get_student_name(student.student_id),
             "module_names": module_names,
             "module_grades": module_grades,
         }
@@ -87,12 +88,14 @@ def edit_student(student_id):
     success_message = None
     error_message = None
     if form.validate_on_submit():
+        # validate inputs server-side, and module is correct
         if (
             form.module_id.data in get_all_module_ids()
         ) and 0 <= form.grade.data <= 100:
             student_enrolment_module = ModuleEnrolment.query.get(
                 (student_id, form.module_id.data)
             )
+            # if student is already enrolled on module, just update grade. Otherwise, create new module enrolment
             if student_enrolment_module is not None:
                 student_enrolment_module.grade = form.grade.data
             else:
@@ -104,6 +107,7 @@ def edit_student(student_id):
                         grade_date=datetime.now().date(),
                     )
                 )
+            # Add to database, reset form to blank, display success_message on re-render
             db.session.commit()
             form = TutorAddStudentGradeForm(formdata=None)
             success_message = "Completed successfully"
@@ -128,11 +132,14 @@ def edit_student_course(student_id):
     error_message = None
     form = TutorChangeStudentCourseForm()
     if form.validate_on_submit():
+        # Checks course id is valid
         if Course.query.get(form.course_id.data) is None:
             error_message = "Course does not exist"
         else:
+            # updates student's course id
             student = Student.query.get(student_id)
             student.course_id = form.course_id.data
+            db.session.commit()
             return redirect(url_for("main.edit_student", student_id=student.id))
     return render_template(
         "edit_student_course.html",
@@ -151,6 +158,7 @@ def edit_student_course(student_id):
 def create_course():
     form = AdminCreateCourse()
     if form.validate_on_submit():
+        # creates course, adds to database, redirects to the course's edit page for tutor to add modules
         course = Course(course_name=form.course_name.data)
         db.session.add(course)
         db.session.commit()
@@ -171,6 +179,7 @@ def edit_course(course_id):
     if form.validate_on_submit():
         success_message = None
         error_message = None
+        # checks module_id matches to a module, and order number isn't taken
         if Module.query.get(form.module_id.data) is None:
             error_message = "Module id was not found"
         elif (
@@ -181,10 +190,12 @@ def edit_course(course_id):
         ):
             error_message = "The order number was already taken"
         else:
+            # uses composite primary key to find if module is already attached to course - if it is, just update order
             course_module = CourseModule.query.get((course_id, form.module_id.data))
             if course_module is not None:
                 course_module.module_order = form.module_order.data
             else:
+                # otherwise attach module to course
                 db.session.add(
                     CourseModule(
                         course_id=course_id,
@@ -192,6 +203,7 @@ def edit_course(course_id):
                         module_order=form.module_order.data,
                     )
                 )
+            # Add to database, reset form to blank, display success_message on re-render
             db.session.commit()
             success_message = "Completed successfully"
             form = AdminAttachModuleToCourse(formdata=None)
@@ -214,6 +226,7 @@ def create_module():
     form = AdminCreateModule()
     success_message = None
     if form.validate_on_submit():
+        # create new module, insert into database, re-render same page with empty form and success message
         db.session.add(
             Module(
                 module_name=form.module_name.data,
@@ -232,7 +245,9 @@ def create_module():
 @admin_required
 def create_tutor():
     form = AdminCreateTutor()
+    error_message = None
     if form.validate_on_submit():
+        # checks tutor email is not already used then add new tutor to database, otherwise show error message
         if Tutor.query.filter_by(tutor_email=form.tutor_email.data).first() is None:
             db.session.add(
                 Tutor(
@@ -245,43 +260,55 @@ def create_tutor():
                 )
             )
             db.session.commit()
-        return redirect(url_for("main.create_tutor"))
-    return render_template("create_tutor.html", form=form)
+            return redirect(url_for("main.create_tutor"))
+        else:
+            error_message = "Tutor email is already in use"
+    return render_template("create_tutor.html", form=form, error_message=error_message)
 
 
 @main.route("/student/create", methods=["GET", "POST"])
 @login_required
 def create_student():
     form = TutorCreateStudentForm()
+    error_message = None
     if form.validate_on_submit():
+        # checks student email is not already used
         if (
             Student.query.filter_by(student_email=form.student_email.data).first()
             is None
-            and Course.query.get(form.course_id.data) is not None
         ):
-            db.session.add(
-                Student(
-                    student_email=form.student_email.data,
-                    student_name=form.student_name.data,
-                    join_date=datetime.now().date(),
-                    course_id=form.course_id.data,
+            # checks course id relates to a course
+            if Course.query.get(form.course_id.data) is not None:
+                # add student to database
+                db.session.add(
+                    Student(
+                        student_email=form.student_email.data,
+                        student_name=form.student_name.data,
+                        join_date=datetime.now().date(),
+                        course_id=form.course_id.data,
+                    )
                 )
-            )
-            db.session.commit()
-            student_id = (
-                Student.query.filter_by(student_email=form.student_email.data)
-                .first()
-                .id
-            )
-            db.session.add(
-                StudentTutor(student_id=student_id, tutor_id=current_user.id)
-            )
-            db.session.commit()
-            return redirect(url_for("main.edit_student", student_id=student_id))
+                db.session.commit()
+                # get created student and create relationship to the tutor who is creating it
+                student_id = (
+                    Student.query.filter_by(student_email=form.student_email.data)
+                    .first()
+                    .id
+                )
+                db.session.add(
+                    StudentTutor(student_id=student_id, tutor_id=current_user.id)
+                )
+                db.session.commit()
+                return redirect(url_for("main.edit_student", student_id=student_id))
+            else:
+                error_message = "Course was not found"
+        else:
+            error_message = "Student email is not unique"
     return render_template(
         "create_student.html",
         form=form,
         courses=get_all_courses(),
+        error_message=error_message,
     )
 
 
@@ -289,6 +316,7 @@ def create_student():
 @login_required
 @admin_required
 def view_tutors():
+    # display list of tutors
     return render_template("tutor_view.html", tutors=Tutor.query.all())
 
 
@@ -296,6 +324,8 @@ def view_tutors():
 @login_required
 @admin_required
 def delete_tutor(tutor_id):
+    # this is a POST request, so we must use flashes for errors
+    # checks tutor is a valid tutor, and the tutor isn't themselves (otherwise you can end up with no admins)
     tutor = Tutor.query.get(tutor_id)
     if tutor is None:
         flash("Tutor could not be deleted, please try again", "error")
@@ -315,6 +345,7 @@ def tutor_login():
     form = TutorLoginForm()
     error_message = None
     if form.validate_on_submit():
+        # check email matches a tutor's email, and hashed password matches
         user = Tutor.query.filter_by(tutor_email=form.email.data).first()
         if user and bcrypt.check_password_hash(user.tutor_password, form.password.data):
             login_user(user, remember=form.remember.data)

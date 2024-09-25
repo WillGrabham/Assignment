@@ -1,9 +1,8 @@
 {% extends "base.html" %}
 {% block content %}
     <div class="container">
-        {% if error_message %}<div class="alert alert-danger" role="alert">{{ error_message }}</div>{% endif %}
-        {% if success_message %}<div class="alert alert-success" role="alert">{{ success_message }}</div>{% endif %}
         <h1>Tutors</h1>
+        <!-- Table for showing all tutors -->
         <table class="table" style="max-width: 40rem">
             <thead>
                 <tr>
@@ -18,6 +17,7 @@
                         <td>{{ tutor.tutor_name }}</td>
                         <td>{{ tutor.tutor_email }}</td>
                         <td>
+                            <!-- A button to delete a tutor -->
                             <form action="{{ url_for('main.delete_tutor', tutor_id=tutor.id) }}"
                                   method="POST"
                                   style="display:inline"
@@ -30,6 +30,7 @@
                 {% endfor %}
             </thead>
         </table>
+        <!-- Prompt to create a tutor at end of table -->
         <a class="btn btn-dark" href="{{ url_for("main.create_tutor") }}">Create tutor</a>
     </div>
 {% endblock %}

@@ -1,7 +1,9 @@
 {% extends "base.html" %}
 {% block content %}
     <div class="container">
+        {% if error_message %}<div class="alert alert-danger" role="alert">{{ error_message }}</div>{% endif %}
         <h2>Create tutor</h2>
+        <!--A form for an admin to create a tutor.-->
         <form method="POST" action="{{ url_for("main.create_tutor") }}">
             {{ form.hidden_tag() }}
             <div class="mb-3">

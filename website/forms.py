@@ -4,6 +4,8 @@ from wtforms.fields.simple import EmailField
 from wtforms.validators import DataRequired, Email, NumberRange
 
 
+# Validators provider server side validation
+# *Field creates an input type with client-side validation
 class TutorLoginForm(FlaskForm):
     email = EmailField("Email", validators=[DataRequired(), Email()])
     password = PasswordField("Password", validators=[DataRequired()])

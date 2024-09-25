@@ -27,6 +27,7 @@
                 </table>
             </div>
             <div class="card" style="padding: 1rem">
+                <!-- A form for a tutor to change a student's course -->
                 {% if error_message %}<div class="alert alert-danger" role="alert">{{ error_message }}</div>{% endif %}
                 <form method="POST"
                       action="{{ url_for("main.edit_student_course", student_id=student_id) }}">

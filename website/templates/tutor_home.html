@@ -4,6 +4,7 @@
     <div class="d-flex flex-wrap justify-content-center">
         {% if student_grades %}
             <script>let ctx</script>
+            <!-- If tutor has students, iterate over the map of student id to dictionary-->
             {% for student_id, object in student_grades.items() %}
                 <div class="card"
                      style="width: 40rem;
@@ -14,6 +15,7 @@
                         <a class="btn btn-primary"
                            href="{{ url_for('main.edit_student', student_id=student_id) }}">{{ object.student_name }}</a>
                     </div>
+                    <!-- For each student, show a bar chart which shows the students grades, with the label of module names -->
                     <canvas id="chart-{{ student_id }}">
                         <script>
                     ctx = document.getElementById('chart-{{student_id}}')
@@ -27,6 +29,7 @@
                                 tension: 0
                             }]
                         },
+                        // ensure each graph's scale is up to 100
                         options: {
                             scales: {
                                 y: {
@@ -40,6 +43,7 @@
                 </div>
             {% endfor %}
         {% else %}
+            <!-- If tutor has no students, prompt tutor to create a new student -->
             <a class="btn btn-primary" href="{{ url_for("main.create_student") }}">Create Student</a>
         {% endif %}
     </div>
