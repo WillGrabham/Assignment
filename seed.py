@@ -112,10 +112,19 @@ with app.app_context():
     db.session.commit()
 
     new_tutor = Tutor.query.filter_by(tutor_name=tutor_name).first()
+    new_admin_tutor = Tutor.query.filter_by(tutor_email="non-admin@admin.com").first()
     student_tutor = StudentTutor(student_id=new_student.id, tutor_id=new_tutor.id)
+    student_admin_tutor = StudentTutor(
+        student_id=new_student.id, tutor_id=new_admin_tutor.id
+    )
     student_tutor_two = StudentTutor(
         student_id=new_student_two.id, tutor_id=new_tutor.id
     )
+    student_admin_tutor_two = StudentTutor(
+        student_id=new_student_two.id, tutor_id=new_admin_tutor.id
+    )
     db.session.add(student_tutor)
     db.session.add(student_tutor_two)
+    db.session.add(student_admin_tutor)
+    db.session.add(student_admin_tutor_two)
     db.session.commit()
