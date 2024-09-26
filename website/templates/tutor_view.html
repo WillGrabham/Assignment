@@ -21,7 +21,7 @@
                             <form action="{{ url_for('main.delete_tutor', tutor_id=tutor.id) }}"
                                   method="POST"
                                   style="display:inline"
-                                  onsubmit="event.preventDefault(); this.submit()">
+                                  onsubmit="event.preventDefault(); confirmDelete(this)">
                                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                                 <button type="submit" class="btn btn-primary">delete</button>
                             </form>
@@ -33,4 +33,14 @@
         <!-- Prompt to create a tutor at end of table -->
         <a class="btn btn-dark" href="{{ url_for("main.create_tutor") }}">Create tutor</a>
     </div>
+    <script>
+        function confirmDelete(form) {
+            const userConfirmation = confirm("Are you sure you want to delete this tutor?");
+            if (userConfirmation) {
+                return form.submit();
+            } else {
+                return false;
+            }
+        }
+    </script>
 {% endblock %}
