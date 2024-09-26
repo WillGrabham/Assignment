@@ -17,10 +17,10 @@
 
 #### Logging in:
 
-| Username            | Password | Is Admin |
-|---------------------|----------|:--------:|
-| admin@admin.com     | password |   True   |
-| non-admin@admin.com | password |  False   |
+| Username         | Password | Is Admin |
+|------------------|----------|:--------:|
+| admin@admin.com  | password |   True   |
+| sharia@email.com | password |  False   |
 
 #### Navigation
 
